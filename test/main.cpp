@@ -261,7 +261,8 @@ void RobotBattle(bool recordFen, const std::string& fileName, int searchDepth = 
             fen += Move2String(search.best_move());
         }
     }
-    std::cout << "draw" << std::endl;
+    if (maxPly <= 0)
+        std::cout << "draw" << std::endl;
 }
 
 void TestSpeed(const std::string &fileName, int searchDepth = kSearchDepth)
