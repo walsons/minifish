@@ -1,7 +1,7 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
-#include "types.h"
+#include "structures.h"
 
 inline Square operator+(Square sq, Direction d)
 {
