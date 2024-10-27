@@ -86,7 +86,7 @@ private:
             bool flag = false;
             for (Square pos = s + d; f(pos, s); pos += d)
             {
-                if (position_.piece_from_square(pos) != '0')
+                if (position_.piece_from_square(pos) != Piece::NO_PIECE)
                 {
                     if (flag)
                     {
@@ -123,7 +123,7 @@ private:
     void KnightMove(Square s)
     {
         auto f = [&](Square barrier, Square destination1, Square destination2) {
-            if (SQ_A0 <= barrier && barrier < SQ_NUM && Distance(s, barrier) == 1 && position_.piece_from_square(barrier) == '0')
+            if (SQ_A0 <= barrier && barrier < SQ_NUM && Distance(s, barrier) == 1 && position_.piece_from_square(barrier) == Piece::NO_PIECE)
             {
                 if (SQ_A0 <= destination1 && destination1 < SQ_NUM && Distance(s, destination1) == 2)
                 {
@@ -165,7 +165,7 @@ private:
         auto f = [&](Square barrier, Square destination) {
             static constexpr Square SQ_BEG = (c == Color::RED ? SQ_A0 : SQ_A5);
             static constexpr Square SQ_END = (c == Color::RED ? SQ_A5 : SQ_NUM);
-            if (SQ_BEG <= barrier && barrier < SQ_END && Distance(s, barrier) == 1 && position_.piece_from_square(barrier) == '0')
+            if (SQ_BEG <= barrier && barrier < SQ_END && Distance(s, barrier) == 1 && position_.piece_from_square(barrier) == Piece::NO_PIECE)
             {
                 if (SQ_BEG <= destination && destination < SQ_END && Distance(s, destination) == 2)
                 {
@@ -268,10 +268,10 @@ private:
         // Face enemy King
         static constexpr Direction d = (c == Color::RED ? SQ_NORTH : SQ_SOUTH);
         static constexpr auto e = (c == Color::RED ? &NorthEnd : &SouthEnd);
-        static constexpr Piece k = (c == Color::RED ? 'k' : 'K');
+        static constexpr Piece k = (c == Color::RED ? Piece::B_KING : Piece::W_KING);
         for (Square pos = s + d; s < e(pos); s += d)
         {
-            if (position_.piece_from_square(pos) == '0')
+            if (position_.piece_from_square(pos) == Piece::NO_PIECE)
                 continue;
             else if (position_.piece_from_square(pos) == k)
                 pseudo_legal_capture_moves_.push_back(ConstructMove(s, pos));

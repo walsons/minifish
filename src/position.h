@@ -66,6 +66,8 @@ public:
 
 private:
     bool IsChecked(Color c);
+    Piece PieceFromChar(char c) const;
+    char CharFromPiece(Piece piece) const;
 
 private:
     Board board_;

@@ -10,46 +10,46 @@ void MoveGenerator::GeneratePseudoLegalMoves()
 
         switch (position_.piece_from_square(s))
         {
-        case 'R':
+        case Piece::W_ROOK:
             RookMove<Color::RED>(s);
             break;
-        case 'r':
+        case Piece::B_ROOK:
             RookMove<Color::BLACK>(s);
             break;
-        case 'N':
+        case Piece::W_KNIGHT:
             KnightMove<Color::RED>(s);
             break;
-        case 'n':
+        case Piece::B_KNIGHT:
             KnightMove<Color::BLACK>(s);
             break;
-        case 'B':
+        case Piece::W_BISHOP:
             BishopMove<Color::RED>(s);
             break;
-        case 'b':
+        case Piece::B_BISHOP:
             BishopMove<Color::BLACK>(s);
             break;
-        case 'A':
+        case Piece::W_ADVISOR:
             AdvisorMove<Color::RED>(s);
             break;
-        case 'a':
+        case Piece::B_ADVISOR:
             AdvisorMove<Color::BLACK>(s);
             break;
-        case 'K':
+        case Piece::W_KING:
             KingMove<Color::RED>(s);
             break;
-        case 'k':
+        case Piece::B_KING:
             KingMove<Color::BLACK>(s);
             break;
-        case 'C':
+        case Piece::W_CANNON:
             CannonMove<Color::RED>(s);
             break;
-        case 'c':
+        case Piece::B_CANNON:
             CannonMove<Color::BLACK>(s);
             break;
-        case 'P':
+        case Piece::W_PAWN:
             PawnMove<Color::RED>(s);
             break;
-        case 'p':
+        case Piece::B_PAWN:
             PawnMove<Color::BLACK>(s);
             break;
         default:
