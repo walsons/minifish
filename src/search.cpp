@@ -81,7 +81,7 @@ void Search::root_search(int depth, SearchStack ss[])
 int Search::search(Position& position, int depth, int alpha, int beta, SearchStack ss[], int ply)
 {
     TTEntry* ttEntry = TT[position.key()];
-    if (ttEntry != nullptr && ttEntry->depth >= depth)
+    if (ttEntry != nullptr && ttEntry->depth == depth)
     {
         return ttEntry->value;
     }
