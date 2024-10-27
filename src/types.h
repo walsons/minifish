@@ -48,14 +48,8 @@ enum PieceType
 };
 
 using Piece = char;
-using Move = short;
+// using Move = short;
 using Color = char;
 using U64 = unsigned long long;
-
-struct UndoInfo
-{
-    Move move;
-    Piece piece;
-};
 
 #endif
