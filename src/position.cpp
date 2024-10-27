@@ -29,11 +29,11 @@ void Position::SetPosition(const std::string& fen)
     boardStr = segStr + boardStr;
     for (Square s = SQ_A0; s < SQ_NUM; s += SQ_EAST)
     {
-        board_[s] = boardStr[s];
+        board_[s] = PieceFromChar(boardStr[s]);
     }
     for (Square s = SQ_A0; s < SQ_NUM; s += SQ_EAST)
     {
-        key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[s]], s);
+        key_ ^= Zobrist::PieceSquareZobrist(board_[s], s);
     }
 
     std::string fenSideToMove;
@@ -72,8 +72,8 @@ std::string Position::GenerateFen()
             fen = ("/" + seg) + fen;
             seg.clear();
         }
-        if (board_[s] != '0')
-            seg.push_back(board_[s]);
+        if (board_[s] != Piece::NO_PIECE)
+            seg.push_back(CharFromPiece(board_[s]));
         else
         {
             if (seg.back() > '0' && seg.back() <= '9')
@@ -94,18 +94,17 @@ void Position::MakeMove(Move move, UndoInfo& undoInfo)
     auto from = MoveFrom(move);
     auto to = MoveTo(move);
 
-    key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[from]], from);
-    key_ ^= Zobrist::PieceSquareZobrist(NO_PIECE, from);
-    key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[to]], to);
-    key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[from]], to);
+    key_ ^= Zobrist::PieceSquareZobrist(board_[from], from);
+    key_ ^= Zobrist::PieceSquareZobrist(Piece::NO_PIECE, from);
+    key_ ^= Zobrist::PieceSquareZobrist(board_[to], to);
+    key_ ^= Zobrist::PieceSquareZobrist(board_[from], to);
 
     undoInfo = { move, board_[to] };
     board_[to] = board_[from];
-    board_[from] = '0';
+    board_[from] = Piece::NO_PIECE;
 
     side_to_move_ = (side_to_move_ == Color::BLACK ? Color::RED : Color::BLACK);
-    // if (side_to_move_ == Color::BLACK)
-        key_ ^= Zobrist::BlackToMoveZobrist();
+    key_ ^= Zobrist::BlackToMoveZobrist();
 }
 
 void Position::UndoMove(const UndoInfo& undoInfo)
@@ -116,13 +115,12 @@ void Position::UndoMove(const UndoInfo& undoInfo)
     board_[from] = board_[to];
     board_[to] = undoInfo.piece;
 
-    key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[from]], from);
-    key_ ^= Zobrist::PieceSquareZobrist(NO_PIECE, from);
-    key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[to]], to);
-    key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[from]], to);
+    key_ ^= Zobrist::PieceSquareZobrist(board_[from], from);
+    key_ ^= Zobrist::PieceSquareZobrist(Piece::NO_PIECE, from);
+    key_ ^= Zobrist::PieceSquareZobrist(board_[to], to);
+    key_ ^= Zobrist::PieceSquareZobrist(board_[from], to);
 
-    // if (side_to_move_ == Color::BLACK)
-        key_ ^= Zobrist::BlackToMoveZobrist();
+    key_ ^= Zobrist::BlackToMoveZobrist();
     side_to_move_ = (side_to_move_ == Color::BLACK ? Color::RED : Color::BLACK);
 }
 
@@ -133,7 +131,7 @@ void Position::SimpleMakeMove(Move move, UndoInfo& undoInfo)
 
     undoInfo = { move, board_[to] };
     board_[to] = board_[from];
-    board_[from] = '0';
+    board_[from] = Piece::NO_PIECE;
 }
 
 void Position::SimpleUndoMove(const UndoInfo& undoInfo)
@@ -157,7 +155,7 @@ void Position::DisplayBoard()
             boardStr = segStr + boardStr;
             segStr.clear();
         }
-        segStr.push_back(board_[s]);
+        segStr.push_back(CharFromPiece(board_[s]));
     }
     boardStr = segStr + boardStr;
 
@@ -198,11 +196,11 @@ Square Position::KingSquare(Color c)
     if (c == Color::RED)
     {
         // Short-circuit when found
-        f(SQ_D0, SQ_F0, 'K') || f(SQ_D1, SQ_F1, 'K') || f(SQ_D2, SQ_F2, 'K');
+        f(SQ_D0, SQ_F0, Piece::W_KING) || f(SQ_D1, SQ_F1, Piece::W_KING) || f(SQ_D2, SQ_F2, Piece::W_KING);
     }
     else
     {
-        f(SQ_D7, SQ_F7, 'k') || f(SQ_D8, SQ_F8, 'k') || f(SQ_D9, SQ_F9, 'k');
+        f(SQ_D7, SQ_F7, Piece::B_KING) || f(SQ_D8, SQ_F8, Piece::B_KING) || f(SQ_D9, SQ_F9, Piece::B_KING);
     }
     
     return kPos;
@@ -225,12 +223,12 @@ bool Position::IsChecked(Color c)
     /***** Pawn *****/
     if (c == Color::RED)
     {
-        if (board_[kPos + SQ_NORTH] == 'p' || board_[kPos + SQ_EAST] == 'p' || board_[kPos + SQ_WEST] == 'p')
+        if (board_[kPos + SQ_NORTH] == Piece::B_PAWN || board_[kPos + SQ_EAST] == Piece::B_PAWN || board_[kPos + SQ_WEST] == Piece::B_PAWN)
             return true;
     }
     else
     {
-        if (board_[kPos + SQ_SOUTH] == 'P' || board_[kPos + SQ_EAST] == 'P' || board_[kPos + SQ_WEST] == 'P')
+        if (board_[kPos + SQ_SOUTH] == Piece::W_PAWN || board_[kPos + SQ_EAST] == Piece::W_PAWN || board_[kPos + SQ_WEST] == Piece::W_PAWN)
             return true;
     }
 
@@ -239,21 +237,21 @@ bool Position::IsChecked(Color c)
         int flag = 0;  // How many pieces in the middle
         for (Square pos = kPos + d; f(pos, kPos); pos += d)
         {
-            if (board_[pos] != '0')
+            if (board_[pos] != Piece::NO_PIECE)
             {
                 if (flag == 0)
                 {
                     // Rook
-                    if ((c == Color::RED && board_[pos] == 'r') || (c == Color::BLACK && board_[pos] == 'R'))
+                    if ((c == Color::RED && board_[pos] == Piece::B_ROOK) || (c == Color::BLACK && board_[pos] == Piece::W_ROOK))
                         return true;
                     // King
-                    if ((c == Color::RED && board_[pos] == 'k') || (c == Color::BLACK && board_[pos] == 'K'))
+                    if ((c == Color::RED && board_[pos] == Piece::B_KING) || (c == Color::BLACK && board_[pos] == Piece::W_KING))
                         return true;
                 }
                 else if (flag == 1)
                 {
                     // Cannon
-                    if ((c == Color::RED && board_[pos] == 'c') || (c == Color::BLACK && board_[pos] == 'C'))
+                    if ((c == Color::RED && board_[pos] == Piece::B_CANNON) || (c == Color::BLACK && board_[pos] == Piece::W_CANNON))
                         return true;
                 }
                 ++flag;
@@ -268,15 +266,15 @@ bool Position::IsChecked(Color c)
 
     /***** Knight *****/
     auto f2 = [&](Square barrier, Square destination1, Square destination2) {
-        if (SQ_A0 <= barrier && barrier < SQ_NUM && Distance(kPos, barrier) == 1 && board_[barrier] == '0')
+        if (SQ_A0 <= barrier && barrier < SQ_NUM && Distance(kPos, barrier) == 1 && board_[barrier] == Piece::NO_PIECE)
         {
             if (SQ_A0 <= destination1 && destination1 < SQ_NUM && Distance(kPos, destination1) == 2 && 
-                ((side_to_move() == Color::RED && board_[destination1] == 'n') || (side_to_move() == Color::BLACK && board_[destination1] == 'N')))
+                ((side_to_move() == Color::RED && board_[destination1] == Piece::B_KNIGHT) || (side_to_move() == Color::BLACK && board_[destination1] == Piece::W_KNIGHT)))
             {
                 return true;
             }
             if (SQ_A0 <= destination2 && destination2 < SQ_NUM && Distance(kPos, destination2) == 2 && 
-                ((side_to_move() == Color::RED && board_[destination2] == 'n') || (side_to_move() == Color::BLACK && board_[destination2] == 'N')))
+                ((side_to_move() == Color::RED && board_[destination2] == Piece::B_KNIGHT) || (side_to_move() == Color::BLACK && board_[destination2] == Piece::W_KNIGHT)))
             {
                 return true;
             }
@@ -307,3 +305,74 @@ bool Position::IsChecked(Color c)
     return false;
 }
 
+Piece Position::PieceFromChar(char c) const
+{
+    switch (c)
+    {
+    case 'R':
+        return Piece::W_ROOK;
+    case 'r':
+        return Piece::B_ROOK;
+    case 'N':
+        return Piece::W_KNIGHT;
+    case 'n':
+        return Piece::B_KNIGHT;
+    case 'B':
+        return Piece::W_BISHOP;
+    case 'b':
+        return Piece::B_BISHOP;
+    case 'A':
+        return Piece::W_ADVISOR;
+    case 'a':
+        return Piece::B_ADVISOR;
+    case 'K':
+        return Piece::W_KING;
+    case 'k':
+        return Piece::B_KING;
+    case 'C':
+        return Piece::W_CANNON;
+    case 'c':
+        return Piece::B_CANNON;
+    case 'P':
+        return Piece::W_PAWN;
+    case 'p':
+        return Piece::B_PAWN;
+    }
+    return Piece::NO_PIECE;
+}
+
+char Position::CharFromPiece(Piece piece) const
+{
+    switch (piece)
+    {
+    case Piece::W_ROOK:
+        return 'R';
+    case Piece::B_ROOK:
+        return 'r';
+    case Piece::W_KNIGHT:
+        return 'N';
+    case Piece::B_KNIGHT:
+        return 'n';
+    case Piece::W_BISHOP:
+        return 'B';
+    case Piece::B_BISHOP:
+        return 'b';
+    case Piece::W_ADVISOR:
+        return 'A';
+    case Piece::B_ADVISOR:
+        return 'a';
+    case Piece::W_KING:
+        return 'K';
+    case Piece::B_KING:
+        return 'k';
+    case Piece::W_CANNON:
+        return 'C';
+    case Piece::B_CANNON:
+        return 'c';
+    case Piece::W_PAWN:
+        return 'P';
+    case Piece::B_PAWN:
+        return 'p';
+    }
+    return '0';
+}

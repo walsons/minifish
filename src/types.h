@@ -24,7 +24,7 @@ enum Direction : char
     SQ_WEST = -SQ_EAST
 };
 
-enum PieceType
+enum class Piece : char
 {
     W_ROOK,
     W_KNIGHT,
@@ -44,16 +44,16 @@ enum PieceType
 
     NO_PIECE,
 
-    PT_NUM
+    PIECE_NUM
 };
 
-enum class Color
+enum class Color : char
 {
     RED,
     BLACK
 };
 
-using Piece = char;
+// using Piece = char;
 // using Move = short;
 // using Color = char;
 using U64 = unsigned long long;

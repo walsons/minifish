@@ -7,46 +7,46 @@ int Evaluate::Eval(const Position& position)
     {
         switch (position.piece_from_square(s))
         {
-        case 'R':
+        case Piece::W_ROOK:
             score += RookValue;
             break;
-        case 'r':
+        case Piece::B_ROOK:
             score += -RookValue;
             break;
-        case 'N':
+        case Piece::W_KNIGHT:
             score += KnightValue;
             break;
-        case 'n':
+        case Piece::B_KNIGHT:
             score += -KnightValue;
             break;
-        case 'B':
+        case Piece::W_BISHOP:
             score += BishopValue;
             break;
-        case 'b':
+        case Piece::B_BISHOP:
             score += -BishopValue;
             break;
-        case 'A':
+        case Piece::W_ADVISOR:
             score += AdvisorValue;
             break;
-        case 'a':
+        case Piece::B_ADVISOR:
             score += -AdvisorValue;
             break;
-        case 'K':
+        case Piece::W_KING:
             score += KingValue;
             break;
-        case 'k':
+        case Piece::B_KING:
             score += -KingValue;
             break;
-        case 'C':
+        case Piece::W_CANNON:
             score += CannonValue;
             break;
-        case 'c':
+        case Piece::B_CANNON:
             score += -CannonValue;
             break;
-        case 'P':
+        case Piece::W_PAWN:
             score += PawnValue;
             break;
-        case 'p':
+        case Piece::B_PAWN:
             score += -PawnValue;
             break;
         }

@@ -20,7 +20,8 @@ void Test(int searchDepth = kSearchDepth)
     // position.SetPosition("rnbakabnr/9/9/p1p1C1p1p/9/1C7/P1P1P1P1P/6N2/8R/1RBAKAB2 b - - 0 1");
     // position.SetPosition("r1ba1abnr/3k5/6c2/6p1p/p3C4/3RC4/P3P1P1P/9/9/1RBAKABN1 b - - 0 1");
     // position.SetPosition("r1ba1abnr/3k5/6c2/6p1p/p3C4/3RC4/P3P1P1P/9/9/1RBAKABN1 b - - 0 1 moves g7d7");
-    position.SetPosition("rCbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/7C1/9/RNBAKABNR b - - 0 1");
+    // position.SetPosition("rCbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/7C1/9/RNBAKABNR b - - 0 1");
+    position.SetPosition("rnbakabnr/9/7c1/p1p1C1p1p/9/9/P1P1P1P1P/1C4N2/9/1RBAKAB1R b - - 0 1 moves a6a5 b2b4");
 
     position.DisplayBoard();
     Search search(position);
@@ -78,7 +79,7 @@ void PlayWithHuman(int searchDepth = kSearchDepth)
             break;
         }
         auto move = String2Move(smove);
-        if (position.piece_from_square(MoveTo(move)) != '0')
+        if (position.piece_from_square(MoveTo(move)) != Piece::NO_PIECE)
         {
             position.MakeMove(move, undoInfo);
             fen = position.GenerateFen();
@@ -115,7 +116,7 @@ void PlayWithHuman(int searchDepth = kSearchDepth)
         std::cout << "best move:" << Move2String(search.best_move()) << " score:" << search.best_score() << std::endl;
         auto duration = (double)(end - beg) / CLOCKS_PER_SEC;
         std::cout << "time cost:" << duration << std::endl;
-        if (position.piece_from_square(MoveTo(search.best_move())) != '0')
+        if (position.piece_from_square(MoveTo(search.best_move())) != Piece::NO_PIECE)
         {
             position.MakeMove(search.best_move(), undoInfo);
             fen = position.GenerateFen();
@@ -211,7 +212,7 @@ void RobotBattle(bool recordFen, const std::string& fileName, int searchDepth = 
         std::cout << "best move:" << Move2String(search.best_move()) << " score:" << search.best_score() << std::endl;
         auto duration = (double)(end - beg) / CLOCKS_PER_SEC;
         std::cout << "time cost:" << duration << std::endl;
-        if (position.piece_from_square(MoveTo(search.best_move())) != '0')
+        if (position.piece_from_square(MoveTo(search.best_move())) != Piece::NO_PIECE)
         {
             position.MakeMove(search.best_move(), undoInfo);
             fen = position.GenerateFen();
@@ -247,7 +248,7 @@ void RobotBattle(bool recordFen, const std::string& fileName, int searchDepth = 
         std::cout << "best move:" << Move2String(search.best_move()) << " score:" << search.best_score() << std::endl;
         duration = (double)(end - beg) / CLOCKS_PER_SEC;
         std::cout << "time cost:" << duration << std::endl;
-        if (position.piece_from_square(MoveTo(search.best_move())) != '0')
+        if (position.piece_from_square(MoveTo(search.best_move())) != Piece::NO_PIECE)
         {
             position.MakeMove(search.best_move(), undoInfo);
             fen = position.GenerateFen();

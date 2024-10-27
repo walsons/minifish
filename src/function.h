@@ -3,6 +3,8 @@
 
 #include "structures.h"
 
+constexpr char PieceIndex(const Piece& piece) { return static_cast<char>(piece); }
+
 inline Square operator+(Square sq, Direction d)
 {
     return static_cast<Square>(static_cast<char>(sq) + static_cast<char>(d));
@@ -58,14 +60,14 @@ inline constexpr Color operator!(Color c)
     return c == Color::RED ? Color::BLACK : Color::RED;
 }
 
-inline bool IsEmpty(Piece piece) { return piece == '0'; }
+inline bool IsEmpty(Piece piece) { return piece == Piece::NO_PIECE; }
 
 template <Color c>
 bool IsColor(Piece piece);
 template <>
-inline bool IsColor<Color::RED>(Piece piece) { return piece >= 'A' && piece <= 'Z'; }
+inline bool IsColor<Color::RED>(Piece piece) { return piece >= Piece::W_ROOK && piece <= Piece::W_PAWN; }
 template <>
-inline bool IsColor<Color::BLACK>(Piece piece) { return piece >= 'a' && piece <= 'z'; }
+inline bool IsColor<Color::BLACK>(Piece piece) { return piece >= Piece::B_ROOK && piece <= Piece::B_PAWN; }
 
 template <Color c>
 bool IsInPalace(Square s);
