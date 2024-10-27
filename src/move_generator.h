@@ -90,7 +90,7 @@ private:
                 {
                     if (flag)
                     {
-                        if (IsColor<EnemyColor<c>>(position_.piece_from_square(pos)))
+                        if (IsColor<!c>(position_.piece_from_square(pos)))
                             pseudo_legal_capture_moves_.push_back(ConstructMove(s, pos));
                         break;
                     }
@@ -129,14 +129,14 @@ private:
                 {
                     if (IsEmpty(position_.piece_from_square(destination1)))
                         pseudo_legal_non_capture_moves_.push_back(ConstructMove(s, destination1));
-                    else if (IsColor<EnemyColor<c>>(position_.piece_from_square(destination1)))
+                    else if (IsColor<!c>(position_.piece_from_square(destination1)))
                         pseudo_legal_capture_moves_.push_back(ConstructMove(s, destination1));
                 }
                 if (SQ_A0 <= destination2 && destination2 < SQ_NUM && Distance(s, destination2) == 2)
                 {
                     if (IsEmpty(position_.piece_from_square(destination1)))
                         pseudo_legal_non_capture_moves_.push_back(ConstructMove(s, destination2));
-                    else if (IsColor<EnemyColor<c>>(position_.piece_from_square(destination1)))
+                    else if (IsColor<!c>(position_.piece_from_square(destination1)))
                         pseudo_legal_capture_moves_.push_back(ConstructMove(s, destination2));
                 }
             }
@@ -163,15 +163,15 @@ private:
     void BishopMove(Square s)
     {
         auto f = [&](Square barrier, Square destination) {
-            static constexpr Square SQ_BEG = (c == 'w' ? SQ_A0 : SQ_A5);
-            static constexpr Square SQ_END = (c == 'w' ? SQ_A5 : SQ_NUM);
+            static constexpr Square SQ_BEG = (c == Color::RED ? SQ_A0 : SQ_A5);
+            static constexpr Square SQ_END = (c == Color::RED ? SQ_A5 : SQ_NUM);
             if (SQ_BEG <= barrier && barrier < SQ_END && Distance(s, barrier) == 1 && position_.piece_from_square(barrier) == '0')
             {
                 if (SQ_BEG <= destination && destination < SQ_END && Distance(s, destination) == 2)
                 {
                     if (IsEmpty(position_.piece_from_square(destination)))
                         pseudo_legal_non_capture_moves_.push_back(ConstructMove(s, destination));
-                    else if (IsColor<EnemyColor<c>>(position_.piece_from_square(destination)))
+                    else if (IsColor<!c>(position_.piece_from_square(destination)))
                         pseudo_legal_capture_moves_.push_back(ConstructMove(s, destination));
                 }
             }
@@ -200,7 +200,7 @@ private:
         auto f = [&](Square destination) {
             if (IsEmpty(position_.piece_from_square(destination)))
                 pseudo_legal_non_capture_moves_.push_back(ConstructMove(s, destination));
-            else if (IsColor<EnemyColor<c>>(position_.piece_from_square(destination)))
+            else if (IsColor<!c>(position_.piece_from_square(destination)))
                 pseudo_legal_capture_moves_.push_back(ConstructMove(s, destination));
         };
 
@@ -253,7 +253,7 @@ private:
             {
                 if (IsEmpty(position_.piece_from_square(destination)))
                     pseudo_legal_non_capture_moves_.push_back(ConstructMove(s, destination));
-                else if (IsColor<EnemyColor<c>>(position_.piece_from_square(destination)))
+                else if (IsColor<!c>(position_.piece_from_square(destination)))
                     pseudo_legal_capture_moves_.push_back(ConstructMove(s, destination));
             }
         };
@@ -266,9 +266,9 @@ private:
         // West
         f(s + SQ_WEST);
         // Face enemy King
-        static constexpr Direction d = (c == 'w' ? SQ_NORTH : SQ_SOUTH);
-        static constexpr auto e = (c == 'w' ? &NorthEnd : &SouthEnd);
-        static constexpr Piece k = (c == 'w' ? 'k' : 'K');
+        static constexpr Direction d = (c == Color::RED ? SQ_NORTH : SQ_SOUTH);
+        static constexpr auto e = (c == Color::RED ? &NorthEnd : &SouthEnd);
+        static constexpr Piece k = (c == Color::RED ? 'k' : 'K');
         for (Square pos = s + d; s < e(pos); s += d)
         {
             if (position_.piece_from_square(pos) == '0')
@@ -284,26 +284,26 @@ private:
     void PawnMove(Square s)
     {
         // The range across the river
-        static constexpr Square SQ_BEG = (c == 'w' ? SQ_A5 : SQ_A0);
-        static constexpr Square SQ_END = (c == 'w' ? SQ_NUM : SQ_A5);
+        static constexpr Square SQ_BEG = (c == Color::RED ? SQ_A5 : SQ_A0);
+        static constexpr Square SQ_END = (c == Color::RED ? SQ_NUM : SQ_A5);
         // The forward direction
-        static constexpr Direction SQ_FORWARD = (c == 'w' ? SQ_NORTH : SQ_SOUTH);
+        static constexpr Direction SQ_FORWARD = (c == Color::RED ? SQ_NORTH : SQ_SOUTH);
 
         if (IsEmpty(position_.piece_from_square(s + SQ_FORWARD)))
             pseudo_legal_non_capture_moves_.push_back(ConstructMove(s, s + SQ_FORWARD));
-        else if (IsColor<EnemyColor<c>>(position_.piece_from_square(s + SQ_FORWARD)))
+        else if (IsColor<!c>(position_.piece_from_square(s + SQ_FORWARD)))
             pseudo_legal_capture_moves_.push_back(ConstructMove(s, s + SQ_FORWARD));
 
         if (SQ_BEG <= s && s < SQ_END)
         {
             if (IsEmpty(position_.piece_from_square(s + SQ_EAST)))
                 pseudo_legal_non_capture_moves_.push_back(ConstructMove(s, s + SQ_EAST));
-            else if (IsColor<EnemyColor<c>>(position_.piece_from_square(s + SQ_EAST)))
+            else if (IsColor<!c>(position_.piece_from_square(s + SQ_EAST)))
                 pseudo_legal_capture_moves_.push_back(ConstructMove(s, s + SQ_EAST));
 
             if (IsEmpty(position_.piece_from_square(s + SQ_WEST)))
                 pseudo_legal_non_capture_moves_.push_back(ConstructMove(s, s + SQ_WEST));
-            else if (IsColor<EnemyColor<c>>(position_.piece_from_square(s + SQ_WEST)))
+            else if (IsColor<!c>(position_.piece_from_square(s + SQ_WEST)))
                 pseudo_legal_capture_moves_.push_back(ConstructMove(s, s + SQ_WEST));
         }
     }

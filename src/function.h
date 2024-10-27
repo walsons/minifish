@@ -53,31 +53,31 @@ inline Square MoveTo(Move move)
     return static_cast<Square>(move & 0x00FF);
 }
 
-template <Color c>
-constexpr Color EnemyColor = (c == 'w' ? 'b' : 'w');
+inline constexpr Color operator!(Color c)
+{
+    return c == Color::RED ? Color::BLACK : Color::RED;
+}
 
 inline bool IsEmpty(Piece piece) { return piece == '0'; }
 
 template <Color c>
 bool IsColor(Piece piece);
 template <>
-inline bool IsColor<'w'>(Piece piece) { return piece >= 'A' && piece <= 'Z'; }
+inline bool IsColor<Color::RED>(Piece piece) { return piece >= 'A' && piece <= 'Z'; }
 template <>
-inline bool IsColor<'b'>(Piece piece) { return piece >= 'a' && piece <= 'z'; }
+inline bool IsColor<Color::BLACK>(Piece piece) { return piece >= 'a' && piece <= 'z'; }
 
 template <Color c>
 bool IsInPalace(Square s);
 template <>
-inline bool IsInPalace<'w'>(Square s)
+inline bool IsInPalace<Color::RED>(Square s)
 {
     return (SQ_D0 <= s && s <= SQ_F0) || (SQ_D1 <= s && s <= SQ_F1) || (SQ_D2 <= s && s <= SQ_F2);
-    //return Distance(s, SQ_E1) < 2;
 }
 template <>
-inline bool IsInPalace<'b'>(Square s)
+inline bool IsInPalace<Color::BLACK>(Square s)
 {
     return (SQ_D9 <= s && s <= SQ_F9) || (SQ_D8 <= s && s <= SQ_F8) || (SQ_D7 <= s && s <= SQ_F7);
-    //return Distance(s, SQ_E8) < 2;
 }
 
 inline std::string Move2String(Move move)

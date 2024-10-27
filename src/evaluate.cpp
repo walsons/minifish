@@ -50,11 +50,11 @@ int Evaluate::Eval(const Position& position)
             score += -PawnValue;
             break;
         }
-        if (s >= SQ_A5 && IsColor<'w'>(position.piece_from_square(s)))
+        if (s >= SQ_A5 && IsColor<Color::RED>(position.piece_from_square(s)))
             score += 10;
-        if (s < SQ_A5 && IsColor<'b'>(position.piece_from_square(s)))
+        if (s < SQ_A5 && IsColor<Color::BLACK>(position.piece_from_square(s)))
             score += 10;
     }
 
-    return position.side_to_move() == 'w' ? score : -score;
+    return position.side_to_move() == Color::RED ? score : -score;
 }
