@@ -47,9 +47,15 @@ enum PieceType
     PT_NUM
 };
 
+enum class Color
+{
+    RED,
+    BLACK
+};
+
 using Piece = char;
 // using Move = short;
-using Color = char;
+// using Color = char;
 using U64 = unsigned long long;
 
 #endif

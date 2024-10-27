@@ -38,8 +38,8 @@ void Position::SetPosition(const std::string& fen)
 
     std::string fenSideToMove;
     ss >> fenSideToMove;
-    side_to_move_ = (fenSideToMove == "w" ? 'w' : 'b');
-    if (side_to_move_ == 'b')
+    side_to_move_ = (fenSideToMove == "w" ? Color::RED : Color::BLACK);
+    if (side_to_move_ == Color::BLACK)
         key_ ^= Zobrist::BlackToMoveZobrist();
 
     // - - 0 1
@@ -84,7 +84,7 @@ std::string Position::GenerateFen()
     }
     fen = seg + fen;
     fen.push_back(' ');
-    fen.push_back(side_to_move_);
+    fen.push_back(side_to_move_ == Color::RED ? 'w' : 'b');
     fen += " - - 0 1";
     return fen;
 }
@@ -103,8 +103,8 @@ void Position::MakeMove(Move move, UndoInfo& undoInfo)
     board_[to] = board_[from];
     board_[from] = '0';
 
-    side_to_move_ = (side_to_move_ == 'b' ? 'w' : 'b');
-    // if (side_to_move_ == 'b')
+    side_to_move_ = (side_to_move_ == Color::BLACK ? Color::RED : Color::BLACK);
+    // if (side_to_move_ == Color::BLACK)
         key_ ^= Zobrist::BlackToMoveZobrist();
 }
 
@@ -121,9 +121,9 @@ void Position::UndoMove(const UndoInfo& undoInfo)
     key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[to]], to);
     key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[from]], to);
 
-    // if (side_to_move_ == 'b')
+    // if (side_to_move_ == Color::BLACK)
         key_ ^= Zobrist::BlackToMoveZobrist();
-    side_to_move_ = (side_to_move_ == 'b' ? 'w' : 'b');
+    side_to_move_ = (side_to_move_ == Color::BLACK ? Color::RED : Color::BLACK);
 }
 
 void Position::SimpleMakeMove(Move move, UndoInfo& undoInfo)
@@ -195,7 +195,7 @@ Square Position::KingSquare(Color c)
         return false;
     };
     
-    if (c == 'w')
+    if (c == Color::RED)
     {
         // Short-circuit when found
         f(SQ_D0, SQ_F0, 'K') || f(SQ_D1, SQ_F1, 'K') || f(SQ_D2, SQ_F2, 'K');
@@ -210,7 +210,7 @@ Square Position::KingSquare(Color c)
 
 bool Position::IsEnemyChecked()
 {
-    return IsChecked(side_to_move_ == 'w' ? 'b' : 'w');
+    return IsChecked(side_to_move_ == Color::RED ? Color::BLACK : Color::RED);
 }
 
 bool Position::IsSelfChecked()
@@ -223,7 +223,7 @@ bool Position::IsChecked(Color c)
     Square kPos = KingSquare(c);
 
     /***** Pawn *****/
-    if (c == 'w')
+    if (c == Color::RED)
     {
         if (board_[kPos + SQ_NORTH] == 'p' || board_[kPos + SQ_EAST] == 'p' || board_[kPos + SQ_WEST] == 'p')
             return true;
@@ -244,16 +244,16 @@ bool Position::IsChecked(Color c)
                 if (flag == 0)
                 {
                     // Rook
-                    if ((c == 'w' && board_[pos] == 'r') || (c == 'b' && board_[pos] == 'R'))
+                    if ((c == Color::RED && board_[pos] == 'r') || (c == Color::BLACK && board_[pos] == 'R'))
                         return true;
                     // King
-                    if ((c == 'w' && board_[pos] == 'k') || (c == 'b' && board_[pos] == 'K'))
+                    if ((c == Color::RED && board_[pos] == 'k') || (c == Color::BLACK && board_[pos] == 'K'))
                         return true;
                 }
                 else if (flag == 1)
                 {
                     // Cannon
-                    if ((c == 'w' && board_[pos] == 'c') || (c == 'b' && board_[pos] == 'C'))
+                    if ((c == Color::RED && board_[pos] == 'c') || (c == Color::BLACK && board_[pos] == 'C'))
                         return true;
                 }
                 ++flag;
@@ -271,12 +271,12 @@ bool Position::IsChecked(Color c)
         if (SQ_A0 <= barrier && barrier < SQ_NUM && Distance(kPos, barrier) == 1 && board_[barrier] == '0')
         {
             if (SQ_A0 <= destination1 && destination1 < SQ_NUM && Distance(kPos, destination1) == 2 && 
-                ((side_to_move() == 'w' && board_[destination1] == 'n') || (side_to_move() == 'b' && board_[destination1] == 'N')))
+                ((side_to_move() == Color::RED && board_[destination1] == 'n') || (side_to_move() == Color::BLACK && board_[destination1] == 'N')))
             {
                 return true;
             }
             if (SQ_A0 <= destination2 && destination2 < SQ_NUM && Distance(kPos, destination2) == 2 && 
-                ((side_to_move() == 'w' && board_[destination2] == 'n') || (side_to_move() == 'b' && board_[destination2] == 'N')))
+                ((side_to_move() == Color::RED && board_[destination2] == 'n') || (side_to_move() == Color::BLACK && board_[destination2] == 'N')))
             {
                 return true;
             }
