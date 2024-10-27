@@ -39,6 +39,8 @@ void Position::SetPosition(const std::string& fen)
     std::string fenSideToMove;
     ss >> fenSideToMove;
     side_to_move_ = (fenSideToMove == "w" ? 'w' : 'b');
+    if (side_to_move_ == 'b')
+        key_ ^= Zobrist::BlackToMoveZobrist();
 
     // - - 0 1
     std::string temp;
@@ -102,7 +104,7 @@ void Position::MakeMove(Move move, UndoInfo& undoInfo)
     board_[from] = '0';
 
     side_to_move_ = (side_to_move_ == 'b' ? 'w' : 'b');
-    if (side_to_move_ == 'b')
+    // if (side_to_move_ == 'b')
         key_ ^= Zobrist::BlackToMoveZobrist();
 }
 
@@ -119,7 +121,7 @@ void Position::UndoMove(const UndoInfo& undoInfo)
     key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[to]], to);
     key_ ^= Zobrist::PieceSquareZobrist(PieceTypeMap[board_[from]], to);
 
-    if (side_to_move_ == 'b')
+    // if (side_to_move_ == 'b')
         key_ ^= Zobrist::BlackToMoveZobrist();
     side_to_move_ = (side_to_move_ == 'b' ? 'w' : 'b');
 }

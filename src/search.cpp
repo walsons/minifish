@@ -3,9 +3,15 @@
 #include "search.h"
 #include "move_generator.h"
 #include "evaluate.h"
+#include "transposition_table.h"
+
+extern TranspositionTable TT;
 
 void Search::IterativeDeepeningLoop(int maxDepth)
 {
+    TT.NewSearch();
+
+    root_moves_.clear();
     MoveGenerator moveGenerator(root_position_);
     auto checkMoves = moveGenerator.check_moves();
     root_moves_.insert(root_moves_.end(), std::make_move_iterator(checkMoves.begin()), std::make_move_iterator(checkMoves.end()));
@@ -74,6 +80,12 @@ void Search::root_search(int depth, SearchStack ss[])
 
 int Search::search(Position& position, int depth, int alpha, int beta, SearchStack ss[], int ply)
 {
+    TTEntry* ttEntry = TT[position.key()];
+    if (ttEntry != nullptr && ttEntry->depth >= depth)
+    {
+        return ttEntry->value;
+    }
+
     std::list<Move> legalMoves;
     int score = 0;
     MoveGenerator moveGenerator(position);
@@ -85,15 +97,34 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
     legalMoves.insert(legalMoves.end(), std::make_move_iterator(nonCaptureMoves.begin()), std::make_move_iterator(nonCaptureMoves.end()));
     if (legalMoves.empty()) 
     {
+        auto score = -MateValue + ply;
+        TT.Store(position.key(), score, depth, 0);
         // We like choose fastest checkmate in search
-        return -MateValue - depth;
+        return score;
     }
 
     if (depth == 0)
     {
-        return Evaluate::Eval(position);
+        auto score = Evaluate::Eval(position);
+        TT.Store(position.key(), score, depth, 0);
+        return score;
     }
 
+    if (ttEntry != nullptr && ttEntry->move != 0)
+    {
+        bool found = false;
+        for (auto it = legalMoves.begin(); it != legalMoves.end(); ++it)
+        {
+            if (*it == ttEntry->move)
+            {
+                found = true;
+                legalMoves.erase(it);
+                break;
+            }
+        }
+        if (found)
+            legalMoves.push_front(ttEntry->move);
+    }
     for (auto move: legalMoves)
     {
         UndoInfo undoInfo;
@@ -102,8 +133,9 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
         position.UndoMove(undoInfo);
         if (score >= beta)
         {
+            TT.Store(position.key(), beta, depth, move);
             // TODO: Update history and counter move
-            return score;
+            return beta;
         }
         else if (score <= alpha)
         {
@@ -116,6 +148,7 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
             ss[ply].pv.clear();
             ss[ply].pv.push_back(ss[ply].current_move);
             ss[ply].pv.insert(ss[ply].pv.end(), ss[ply + 1].pv.begin(), ss[ply + 1].pv.end());
+            TT.Store(position.key(), score, depth, move);
         }
     }
     return alpha;
