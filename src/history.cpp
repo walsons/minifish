@@ -1,5 +1,15 @@
 #include "history.h"
 
+History::History()
+{
+    Clear();
+}
+
+void History::Clear()
+{
+    memset(history_, 0, sizeof(history_));
+}
+
 void History::Success(const Position &position, Move move, int depth) 
 {
     auto from = move.MoveFrom();

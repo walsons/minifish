@@ -6,6 +6,8 @@
 
 class History {
 public:
+    History();
+    void Clear();
     void Success(const Position &position, Move move, int depth);
     int HistoryValue(const Position &position, Move move) const;
 

@@ -172,6 +172,12 @@ private:
 
 void RobotBattle(bool recordFen, const std::string& fileName, int searchDepth = kSearchDepth)
 {
+    // if (searchDepth == 0), use random depth, it aims to create a lot of different battle files
+    std::default_random_engine e{std::random_device{}()};
+    auto randomDepth = [&e](int lowerbound, int upperbound) { 
+        return e() % (upperbound - lowerbound + 1) + lowerbound;
+    };
+
     RobotBattleRecorder recorder;
     if (recordFen)
     {
@@ -207,7 +213,7 @@ void RobotBattle(bool recordFen, const std::string& fileName, int searchDepth = 
         }
         beg = clock();
         Search search(position);
-        search.IterativeDeepeningLoop(searchDepth);
+        search.IterativeDeepeningLoop(searchDepth == 0 ? randomDepth(2, 5) : searchDepth);
         end = clock();
         std::cout << "best move:" << Move2String(search.best_move()) << " score:" << search.best_score() << std::endl;
         auto duration = (double)(end - beg) / CLOCKS_PER_SEC;
@@ -243,7 +249,7 @@ void RobotBattle(bool recordFen, const std::string& fileName, int searchDepth = 
             }
         }
         beg = clock();
-        search.IterativeDeepeningLoop(searchDepth);
+        search.IterativeDeepeningLoop(searchDepth == 0 ? randomDepth(2, 5) : searchDepth);
         end = clock();
         std::cout << "best move:" << Move2String(search.best_move()) << " score:" << search.best_score() << std::endl;
         duration = (double)(end - beg) / CLOCKS_PER_SEC;
@@ -266,7 +272,7 @@ void RobotBattle(bool recordFen, const std::string& fileName, int searchDepth = 
         std::cout << "draw" << std::endl;
 }
 
-void TestSpeed(const std::string &fileName, int searchDepth = kSearchDepth)
+double TestSpeed(const std::string &fileName, int searchDepth = kSearchDepth, bool showIteration = true)
 {
     std::ifstream fin(fileName, std::ios::in);
     if (fin.is_open())
@@ -281,18 +287,18 @@ void TestSpeed(const std::string &fileName, int searchDepth = kSearchDepth)
             search.IterativeDeepeningLoop(searchDepth);
             auto onePlyEnd = clock();
             auto onePlyDuration = (double)(onePlyEnd - onePlyBeg) / CLOCKS_PER_SEC;
-            std::cout << onePlyDuration << " ";
+            if (showIteration)
+                std::cout << onePlyDuration << " ";
         }
-        std::cout << std::endl;
+        if (showIteration)
+            std::cout << std::endl;
         auto end = clock();
         auto duration = (double)(end - beg) / CLOCKS_PER_SEC;
-        std::cout << "time cost:" << duration << std::endl;
+        std::cout << fileName << "  (depth " << searchDepth << ": " << duration << "s)" << std::endl;
+        return duration;
     }
-    else
-    {
-        std::cout << "Cannot open file" << std::endl;
-        return;
-    }
+    std::cout << "Cannot open file" << std::endl;
+    return 0;
 }
 
 int main(int argc, char* argv[])
@@ -343,19 +349,46 @@ int main(int argc, char* argv[])
         // "robot_battle_1729653504763.txt" (depth 4: 7.29s)  (depth 5: 40.43s)
         // "robot_battle_1729666476581.txt" (depth 4: 7.36s)  (depth 5: 45.98s)
         // "robot_battle_1729759105954.txt" (depth 4: 13.02s) (depth 5: 70.58s)
+        // "robot_battle_1730124987011.txt" (depth 4: *****s) (depth 5: *****s) one robot win
 
         // ============================= i5-1135G7     ============================= 
-        // "robot_battle.txt"               (depth 4: 7.23s)  (depth 5: 45.45s)
-        // "robot_battle_1729653504763.txt" (depth 4: 7.25s)  (depth 5: 47.46s)
-        // "robot_battle_1729666476581.txt" (depth 4: 6.98s)  (depth 5: 53.18s)
-        // "robot_battle_1729759105954.txt" (depth 4: 12.73s) (depth 5: 98.97s)
+        /*
+        robot_battle.txt  (depth 4: 6.655s)
+        robot_battle_1729653504763.txt  (depth 4: 8.59s)
+        robot_battle_1729666476581.txt  (depth 4: 8.698s)
+        robot_battle_1729759105954.txt  (depth 4: 14.86s)
+        robot_battle_1730124987011.txt  (depth 4: 5.287s)
+        All files cost time is: 44.09s
+
+        robot_battle.txt  (depth 5: 47.128s)
+        robot_battle_1729653504763.txt  (depth 5: 50.91s)
+        robot_battle_1729666476581.txt  (depth 5: 56.042s)
+        robot_battle_1729759105954.txt  (depth 5: 94.698s)
+        robot_battle_1730124987011.txt  (depth 5: 37.794s)
+        All files cost time is: 286.572s
+        */
+
         if (argc == 4)
         {
             std::string fileName = argv[3];
             TestSpeed(fileName, searchDepth);
         }
         else
-            TestSpeed("robot_battle.txt", searchDepth);
+        {
+            std::vector<std::string> fileList{
+                "robot_battle.txt",
+                "robot_battle_1729653504763.txt",
+                "robot_battle_1729666476581.txt",
+                "robot_battle_1729759105954.txt",
+                "robot_battle_1730124987011.txt"
+            };
+            double totalTime = 0;
+            for (auto file : fileList)
+            {
+                totalTime += TestSpeed(file, searchDepth, false);
+            }
+            std::cout << "All files cost time is: " << totalTime << "s" << std::endl;
+        }
     }
     else
     {
