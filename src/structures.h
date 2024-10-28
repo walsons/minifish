@@ -16,6 +16,7 @@ public:
     Square MoveFrom() const;
     Square MoveTo() const;
     std::string StringFormat() const;
+    short NumberFormat() const { return move_; }
 
     friend std::ostream& operator<<(std::ostream& os, const Move& move)
     {
