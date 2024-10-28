@@ -25,6 +25,7 @@ public:
 private:
     void root_search(int depth, SearchStack ss[]);
     int search(Position& position, int depth, int alpha, int beta, SearchStack ss[], int ply);
+    void sort_moves(const Position& position, std::list<Move>& moves, Move ttMove);
 
 private:
     Position root_position_;

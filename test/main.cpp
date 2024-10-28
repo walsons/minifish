@@ -338,13 +338,27 @@ int main(int argc, char* argv[])
     }
     else if (argv1 == "speed")
     {
-        // "robot_battle.txt"               (depth 4: 15.71s) (depth 5: 163.53s)
-        // "robot_battle_1729653504763.txt" (depth 4: 16.08s) (depth 5: 182.07s)
-        // "robot_battle_1729666476581.txt" (depth 4: 17.09s) (depth 5: 182.00s)
-        TestSpeed("robot_battle_1729666476581.txt", searchDepth);
+        // ============================= Ryzen 7 5800X =============================
+        // "robot_battle.txt"               (depth 4: 7.29s)  (depth 5: 37.69s)
+        // "robot_battle_1729653504763.txt" (depth 4: 7.29s)  (depth 5: 40.43s)
+        // "robot_battle_1729666476581.txt" (depth 4: 7.36s)  (depth 5: 45.98s)
+        // "robot_battle_1729759105954.txt" (depth 4: 13.02s) (depth 5: 70.58s)
+
+        // ============================= i5-1135G7     ============================= 
+        // "robot_battle.txt"               (depth 4: 7.23s)  (depth 5: 45.45s)
+        // "robot_battle_1729653504763.txt" (depth 4: 7.25s)  (depth 5: 47.46s)
+        // "robot_battle_1729666476581.txt" (depth 4: 6.98s)  (depth 5: 53.18s)
+        // "robot_battle_1729759105954.txt" (depth 4: 12.73s) (depth 5: 98.97s)
+        if (argc == 4)
+        {
+            std::string fileName = argv[3];
+            TestSpeed(fileName, searchDepth);
+        }
+        else
+            TestSpeed("robot_battle.txt", searchDepth);
     }
     else
     {
-        std::cout << "Invalid argument1" << std::endl;
+        std::cout << "Invalid argument" << std::endl;
     }
 }

@@ -1,11 +1,14 @@
 #include <iostream>
+#include <algorithm>
 
 #include "search.h"
 #include "move_generator.h"
 #include "evaluate.h"
 #include "transposition_table.h"
+#include "history.h"
 
 extern TranspositionTable TT;
+extern History HISTORY;
 
 void Search::IterativeDeepeningLoop(int maxDepth)
 {
@@ -110,21 +113,22 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
         return score;
     }
 
-    if (ttEntry != nullptr && ttEntry->move != 0)
-    {
-        bool found = false;
-        for (auto it = legalMoves.begin(); it != legalMoves.end(); ++it)
-        {
-            if (*it == ttEntry->move)
-            {
-                found = true;
-                legalMoves.erase(it);
-                break;
-            }
-        }
-        if (found)
-            legalMoves.push_front(ttEntry->move);
-    }
+    // if (ttEntry != nullptr && ttEntry->move != 0)
+    // {
+    //     bool found = false;
+    //     for (auto it = legalMoves.begin(); it != legalMoves.end(); ++it)
+    //     {
+    //         if (*it == ttEntry->move)
+    //         {
+    //             found = true;
+    //             legalMoves.erase(it);
+    //             break;
+    //         }
+    //     }
+    //     if (found)
+    //         legalMoves.push_front(ttEntry->move);
+    // }
+    sort_moves(position, legalMoves, ttEntry != nullptr ? ttEntry->move : Move());
     for (auto move: legalMoves)
     {
         UndoInfo undoInfo;
@@ -135,6 +139,7 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
         {
             TT.Store(position.key(), beta, depth, move);
             // TODO: Update history and counter move
+            HISTORY.Success(position, move, depth);
             return beta;
         }
         else if (score <= alpha)
@@ -152,4 +157,22 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
         }
     }
     return alpha;
+}
+
+void Search::sort_moves(const Position& position, std::list<Move>& moves, Move ttMove)
+{
+    // allocate too many memroy, will refactor this later
+    static int scores[1 << sizeof(ttMove.NumberFormat()) * 8];
+
+    for (auto move: moves)
+    {
+        scores[move] = HISTORY.HistoryValue(position, move);
+        if (move == ttMove)
+        {
+            scores[move] += History::kHistoryMax;
+        }
+    }
+    moves.sort([](const Move& a, const Move& b) {
+        return scores[a] > scores[b];
+    });
 }
