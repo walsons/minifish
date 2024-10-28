@@ -13,6 +13,7 @@ extern History HISTORY;
 void Search::IterativeDeepeningLoop(int maxDepth)
 {
     TT.NewSearch();
+    HISTORY.Clear();
 
     root_moves_.clear();
     MoveGenerator moveGenerator(root_position_);
@@ -113,21 +114,6 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
         return score;
     }
 
-    // if (ttEntry != nullptr && ttEntry->move != 0)
-    // {
-    //     bool found = false;
-    //     for (auto it = legalMoves.begin(); it != legalMoves.end(); ++it)
-    //     {
-    //         if (*it == ttEntry->move)
-    //         {
-    //             found = true;
-    //             legalMoves.erase(it);
-    //             break;
-    //         }
-    //     }
-    //     if (found)
-    //         legalMoves.push_front(ttEntry->move);
-    // }
     sort_moves(position, legalMoves, ttEntry != nullptr ? ttEntry->move : Move());
     for (auto move: legalMoves)
     {
