@@ -3,7 +3,7 @@
 
 #include "structures.h"
 
-constexpr char PieceIndex(const Piece& piece) { return static_cast<char>(piece); }
+constexpr unsigned char PieceIndex(const Piece& piece) { return static_cast<unsigned char>(piece); }
 
 inline Square operator+(Square sq, Direction d)
 {

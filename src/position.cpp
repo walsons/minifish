@@ -337,6 +337,8 @@ Piece Position::PieceFromChar(char c) const
         return Piece::W_PAWN;
     case 'p':
         return Piece::B_PAWN;
+    default:
+        break;
     }
     return Piece::NO_PIECE;
 }
@@ -373,6 +375,8 @@ char Position::CharFromPiece(Piece piece) const
         return 'P';
     case Piece::B_PAWN:
         return 'p';
+    default:
+        break;
     }
     return '0';
 }

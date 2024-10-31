@@ -111,7 +111,7 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
     }
 
     Move move;
-    while (move = movePicker.NextMove())
+    while ((move = movePicker.NextMove()))
     {
         UndoInfo undoInfo;
         position.MakeMove(move, undoInfo);
