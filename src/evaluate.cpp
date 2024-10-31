@@ -49,6 +49,8 @@ int Evaluate::Eval(const Position& position)
         case Piece::B_PAWN:
             score += -PawnValue;
             break;
+        default:
+            break;
         }
         if (s >= SQ_A5 && IsColor<Color::RED>(position.piece_from_square(s)))
             score += 10;

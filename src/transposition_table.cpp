@@ -3,7 +3,7 @@
 #include <cstring>
 
 
-TranspositionTable::TranspositionTable(int sizeOfMB = 16) : generation_(0)
+TranspositionTable::TranspositionTable(size_t sizeOfMB = 16) : generation_(0)
 {
     // size is MB, it will allocate 2 ^ n like 1, 2, 4... MB memory, which smaller or equal to size.
     size_ = 1; 
@@ -15,7 +15,7 @@ TranspositionTable::TranspositionTable(int sizeOfMB = 16) : generation_(0)
 
 void TranspositionTable::NewSearch() { generation_++; }
 
-void TranspositionTable::Clear() { std::memset(tt_entry_, 0, size_ * sizeof(TTEntry) * 4); }
+void TranspositionTable::Clear() { std::memset((void*)tt_entry_, 0, size_ * sizeof(TTEntry) * 4); }
 
 void TranspositionTable::Store(U64 key, int value, int depth, Move move)
 {
@@ -37,7 +37,7 @@ void TranspositionTable::Store(U64 key, int value, int depth, Move move)
             }
         }
     }
-    *replace = TTEntry(key, value, depth, generation_, move);
+    *replace = TTEntry{key, value, depth, generation_, move};
 }
 
 TTEntry* TranspositionTable::operator[](U64 key)

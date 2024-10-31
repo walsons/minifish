@@ -23,14 +23,14 @@ public:
 class TranspositionTable
 {
 public:
-    TranspositionTable(int sizeOfMB);
+    TranspositionTable(size_t sizeOfMB);
     void NewSearch();
     void Clear();
     void Store(U64 key, int value, int depth, Move move);
     TTEntry* operator[](U64 key);
 
 private:
-    int size_;
+    size_t size_;
     // number of items with the same key in hash table
     const int same_key_item_num = 4;
     TTEntry* tt_entry_;
