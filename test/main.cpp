@@ -21,7 +21,8 @@ void Test(int searchDepth = kSearchDepth)
     // position.SetPosition("r1ba1abnr/3k5/6c2/6p1p/p3C4/3RC4/P3P1P1P/9/9/1RBAKABN1 b - - 0 1");
     // position.SetPosition("r1ba1abnr/3k5/6c2/6p1p/p3C4/3RC4/P3P1P1P/9/9/1RBAKABN1 b - - 0 1 moves g7d7");
     // position.SetPosition("rCbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/7C1/9/RNBAKABNR b - - 0 1");
-    position.SetPosition("rnbakabnr/9/7c1/p1p1C1p1p/9/9/P1P1P1P1P/1C4N2/9/1RBAKAB1R b - - 0 1 moves a6a5 b2b4");
+    // position.SetPosition("rnbakabnr/9/7c1/p1p1C1p1p/9/9/P1P1P1P1P/1C4N2/9/1RBAKAB1R b - - 0 1 moves a6a5 b2b4");
+    position.SetPosition("r1ba1abnr/3k5/6c2/p3C1p1p/3RC4/9/P3P1P1P/6N2/9/1RBAKAB2 b - - 0 1 moves g7d7 e6d6 d8e8 e5e4");
 
     position.DisplayBoard();
     Search search(position);
@@ -342,30 +343,22 @@ int main(int argc, char* argv[])
     {
         RobotBattle(true, "robot_battle.txt", searchDepth);
     }
-    else if (argv1 == "speed")
+    else if (argv1 == "speed")  // (Release will be faster)
     {
-        // ============================= Ryzen 7 5800X =============================
-        // "robot_battle.txt"               (depth 4: 7.29s)  (depth 5: 37.69s)
-        // "robot_battle_1729653504763.txt" (depth 4: 7.29s)  (depth 5: 40.43s)
-        // "robot_battle_1729666476581.txt" (depth 4: 7.36s)  (depth 5: 45.98s)
-        // "robot_battle_1729759105954.txt" (depth 4: 13.02s) (depth 5: 70.58s)
-        // "robot_battle_1730124987011.txt" (depth 4: *****s) (depth 5: *****s) one robot win
-
-        // ============================= i5-1135G7     ============================= 
+        // ============================= Ryzen 7 5800X (Debug) =============================
         /*
-        robot_battle.txt  (depth 4: 6.655s)
-        robot_battle_1729653504763.txt  (depth 4: 8.59s)
-        robot_battle_1729666476581.txt  (depth 4: 8.698s)
-        robot_battle_1729759105954.txt  (depth 4: 14.86s)
-        robot_battle_1730124987011.txt  (depth 4: 5.287s)
-        All files cost time is: 44.09s
+        Waiting to test
+        */
 
-        robot_battle.txt  (depth 5: 47.128s)
-        robot_battle_1729653504763.txt  (depth 5: 50.91s)
-        robot_battle_1729666476581.txt  (depth 5: 56.042s)
-        robot_battle_1729759105954.txt  (depth 5: 94.698s)
-        robot_battle_1730124987011.txt  (depth 5: 37.794s)
-        All files cost time is: 286.572s
+        // =============================   i5-1135G7 (Debug)   ============================= 
+        /*
+        robot_battle.txt  (depth 4: 7.627s)
+        robot_battle_1729653504763.txt  (depth 4: 7.889s)
+        robot_battle_1729666476581.txt  (depth 4: 7.642s)
+        robot_battle_1729759105954.txt  (depth 4: 12.895s)
+        robot_battle_1730124987011.txt  (depth 4: 4.054s)
+        robot_battle_1730130702948.txt  (depth 4: 7.079s)
+        All files cost time is: 47.186s
         */
 
         if (argc == 4)
@@ -380,7 +373,8 @@ int main(int argc, char* argv[])
                 "robot_battle_1729653504763.txt",
                 "robot_battle_1729666476581.txt",
                 "robot_battle_1729759105954.txt",
-                "robot_battle_1730124987011.txt"
+                "robot_battle_1730124987011.txt",
+                "robot_battle_1730130702948.txt"       
             };
             double totalTime = 0;
             for (auto file : fileList)

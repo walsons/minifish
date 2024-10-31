@@ -26,25 +26,32 @@ enum Direction : char
 
 enum class Piece : char
 {
-    W_ROOK,
-    W_KNIGHT,
-    W_BISHOP,
-    W_ADVISOR,
-    W_KING,
-    W_CANNON,
     W_PAWN,
+    W_ADVISOR,
+    W_BISHOP,
+    W_KNIGHT,
+    W_CANNON,
+    W_ROOK,
+    W_KING,
 
-    B_ROOK,
-    B_KNIGHT,
-    B_BISHOP,
-    B_ADVISOR,
-    B_KING,
-    B_CANNON,
     B_PAWN,
+    B_ADVISOR,
+    B_BISHOP,
+    B_KNIGHT,
+    B_CANNON,
+    B_ROOK,
+    B_KING,
+
+    PIECE_NUM,
 
     NO_PIECE,
 
-    PIECE_NUM
+    START = W_PAWN,
+    END = B_KING,
+    W_START = W_PAWN,
+    W_END = W_KING,
+    B_START = B_PAWN,
+    B_END = B_KING
 };
 
 enum class Color : char

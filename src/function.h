@@ -65,9 +65,9 @@ inline bool IsEmpty(Piece piece) { return piece == Piece::NO_PIECE; }
 template <Color c>
 bool IsColor(Piece piece);
 template <>
-inline bool IsColor<Color::RED>(Piece piece) { return piece >= Piece::W_ROOK && piece <= Piece::W_PAWN; }
+inline bool IsColor<Color::RED>(Piece piece) { return piece >= Piece::W_START && piece <= Piece::W_END; }
 template <>
-inline bool IsColor<Color::BLACK>(Piece piece) { return piece >= Piece::B_ROOK && piece <= Piece::B_PAWN; }
+inline bool IsColor<Color::BLACK>(Piece piece) { return piece >= Piece::W_START && piece <= Piece::B_END; }
 
 template <Color c>
 bool IsInPalace(Square s);
