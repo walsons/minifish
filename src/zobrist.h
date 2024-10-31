@@ -24,7 +24,7 @@ private:
         std::default_random_engine e{std::random_device{}()};
         auto rand64 = [&e]() { return e() | (static_cast<U64>(e()) << 32); };
         // Init Zobrist
-        for (int i = PieceIndex(Piece::W_ROOK); i < PieceIndex(Piece::PIECE_NUM); ++i)
+        for (int i = PieceIndex(Piece::START); i < PieceIndex(Piece::PIECE_NUM); ++i)
         {
             for (Square s = SQ_A0; s < SQ_NUM; s += SQ_EAST)
             {
