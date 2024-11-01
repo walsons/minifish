@@ -10,6 +10,7 @@ struct SearchStack
 {
     std::vector<Move> pv;
     Move current_move;
+    Move killer_move;
 };
 
 class Search

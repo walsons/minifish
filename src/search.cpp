@@ -98,7 +98,7 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
         return ttEntry->value;
     }
 
-    MovePicker movePicker(position, ttEntry != nullptr ? ttEntry->move : Move());
+    MovePicker movePicker(position, ttEntry != nullptr ? ttEntry->move : Move(), ss[ply].killer_move);
     if (movePicker.NoLegalMove()) 
     {
         auto score = -MateValue + ply;
@@ -126,6 +126,7 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
         {
             TT.Store(position.key(), beta, depth, move);
             HISTORY.Success(position, move, depth);
+            ss[ply].killer_move = move;
             return beta;
         }
         else if (score > alpha)

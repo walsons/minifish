@@ -35,6 +35,7 @@ void Test(int searchDepth = kSearchDepth)
     std::cout << "timecost:" << duration << std::endl;
     std::cout << "bestmove:" << Move2String(search.best_move()) << std::endl;
     std::cout << "score:" << search.best_score() << std::endl;
+    std::cout << "searched nodes count:" << Search::search_nodes << std::endl;
 }
 
 void PlayWithHuman(int searchDepth = kSearchDepth)
@@ -354,13 +355,14 @@ int main(int argc, char* argv[])
 
         // =============================   i5-1135G7 (Debug)   ============================= 
         /*
-        robot_battle.txt  (depth 4: timecost 7.761s, search nodes 1355878)
-        robot_battle_1729653504763.txt  (depth 4: timecost 7.752s, search nodes 1342978)
-        robot_battle_1729666476581.txt  (depth 4: timecost 7.621s, search nodes 1714275)
-        robot_battle_1729759105954.txt  (depth 4: timecost 11.801s, search nodes 2263259)
-        robot_battle_1730124987011.txt  (depth 4: timecost 3.673s, search nodes 487193)
-        robot_battle_1730130702948.txt  (depth 4: timecost 6.872s, search nodes 973992)
-        All files cost time is: 45.48s
+        robot_battle.txt  (depth 4: timecost 7.806s, search nodes 1334472)
+        robot_battle_1729653504763.txt  (depth 4: timecost 7.833s, search nodes 1322592)
+        robot_battle_1729666476581.txt  (depth 4: timecost 8.665s, search nodes 1744149)
+        robot_battle_1729759105954.txt  (depth 4: timecost 13.161s, search nodes 2623869)
+        robot_battle_1730124987011.txt  (depth 4: timecost 3.99s, search nodes 506535)
+        robot_battle_1730130702948.txt  (depth 4: timecost 7.185s, search nodes 945537)
+        robot_battle_1730422269049.txt  (depth 4: timecost 8.588s, search nodes 1317138)
+        All files cost time is: 57.228s
         */
 
         if (argc == 4)

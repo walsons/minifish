@@ -51,7 +51,7 @@ struct ScoreMove
 class MovePicker
 {
 public:
-    MovePicker(const Position& position, Move ttMove);
+    MovePicker(const Position& position, Move ttMove, Move killerMove);
     Move NextMove();
     bool NoLegalMove();
 
@@ -63,12 +63,14 @@ private:
 private:
     Position position_;
     Move tt_move_;
+    Move killer_move_;
     MoveGenerator move_generator_;
     enum class Phase 
     {
         TT,
         CHECK,
         CAPTURE,
+        KILLER,
         NON_CAPTURE,
         END,
     } phase_;
