@@ -29,6 +29,10 @@ private:
     int qsearch(Position& position, int alpha, int beta, SearchStack ss[], int ply);
     void sort_moves(const Position& position, std::list<Move>& moves, Move ttMove);
 
+public:
+    // This number is used to calculate how many nodes have been searched
+    static unsigned long long search_nodes;
+
 private:
     Position root_position_;
     Move best_move_;
