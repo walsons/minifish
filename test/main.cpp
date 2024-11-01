@@ -279,6 +279,7 @@ double TestSpeed(const std::string &fileName, int searchDepth = kSearchDepth, bo
     if (fin.is_open())
     {
         std::string line;
+        unsigned long long searchNodesSum = 0;
         auto beg = clock();
         while (std::getline(fin, line))
         {
@@ -288,14 +289,15 @@ double TestSpeed(const std::string &fileName, int searchDepth = kSearchDepth, bo
             search.IterativeDeepeningLoop(searchDepth);
             auto onePlyEnd = clock();
             auto onePlyDuration = (double)(onePlyEnd - onePlyBeg) / CLOCKS_PER_SEC;
+            searchNodesSum += Search::search_nodes;
             if (showIteration)
-                std::cout << onePlyDuration << " ";
+                std::cout << onePlyDuration << "(" << Search::search_nodes << ")" << "; ";
         }
         if (showIteration)
             std::cout << std::endl;
         auto end = clock();
         auto duration = (double)(end - beg) / CLOCKS_PER_SEC;
-        std::cout << fileName << "  (depth " << searchDepth << ": " << duration << "s)" << std::endl;
+        std::cout << fileName << "  (depth " << searchDepth << ": timecost " << duration << "s, search nodes " << searchNodesSum << ")" << std::endl;
         return duration;
     }
     std::cout << "Cannot open file" << std::endl;
@@ -352,13 +354,13 @@ int main(int argc, char* argv[])
 
         // =============================   i5-1135G7 (Debug)   ============================= 
         /*
-        robot_battle.txt  (depth 4: 7.627s)
-        robot_battle_1729653504763.txt  (depth 4: 7.889s)
-        robot_battle_1729666476581.txt  (depth 4: 7.642s)
-        robot_battle_1729759105954.txt  (depth 4: 12.895s)
-        robot_battle_1730124987011.txt  (depth 4: 4.054s)
-        robot_battle_1730130702948.txt  (depth 4: 7.079s)
-        All files cost time is: 47.186s
+        robot_battle.txt  (depth 4: timecost 7.761s, search nodes 1355878)
+        robot_battle_1729653504763.txt  (depth 4: timecost 7.752s, search nodes 1342978)
+        robot_battle_1729666476581.txt  (depth 4: timecost 7.621s, search nodes 1714275)
+        robot_battle_1729759105954.txt  (depth 4: timecost 11.801s, search nodes 2263259)
+        robot_battle_1730124987011.txt  (depth 4: timecost 3.673s, search nodes 487193)
+        robot_battle_1730130702948.txt  (depth 4: timecost 6.872s, search nodes 973992)
+        All files cost time is: 45.48s
         */
 
         if (argc == 4)
@@ -374,7 +376,8 @@ int main(int argc, char* argv[])
                 "robot_battle_1729666476581.txt",
                 "robot_battle_1729759105954.txt",
                 "robot_battle_1730124987011.txt",
-                "robot_battle_1730130702948.txt"       
+                "robot_battle_1730130702948.txt",
+                "robot_battle_1730422269049.txt"
             };
             double totalTime = 0;
             for (auto file : fileList)

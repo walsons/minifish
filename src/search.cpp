@@ -11,8 +11,11 @@
 extern TranspositionTable TT;
 extern History HISTORY;
 
+unsigned long long Search::search_nodes = 0;
+
 void Search::IterativeDeepeningLoop(int maxDepth)
 {
+    Search::search_nodes = 1;  // root node
     TT.NewSearch();
     HISTORY.Clear();
 
@@ -53,6 +56,7 @@ void Search::IterativeDeepeningLoop(int maxDepth)
 
 void Search::root_search(int depth, SearchStack ss[])
 {
+    ++Search::search_nodes;
     best_move_ = 0;
     best_score_ = -Infinite;
     prohibited_move_ = 0;
@@ -87,6 +91,7 @@ void Search::root_search(int depth, SearchStack ss[])
 
 int Search::search(Position& position, int depth, int alpha, int beta, SearchStack ss[], int ply)
 {
+    ++Search::search_nodes;
     TTEntry* ttEntry = TT[position.key()];
     if (ttEntry != nullptr && ttEntry->depth == depth)
     {
@@ -138,6 +143,7 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
 
 int Search::qsearch(Position& position, int alpha, int beta, SearchStack ss[], int ply)
 {
+    ++Search::search_nodes;
     auto score = Evaluate::Eval(position);
     if (score >= beta)
     {
