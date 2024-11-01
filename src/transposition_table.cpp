@@ -11,6 +11,7 @@ TranspositionTable::TranspositionTable(size_t sizeOfMB = 16) : generation_(0)
         ;
     size_ >>= 1;
     tt_entry_ = new TTEntry[size_ * sizeof(TTEntry) * 4];
+    Clear();
 }
 
 void TranspositionTable::NewSearch() { generation_++; }

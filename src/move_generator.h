@@ -7,6 +7,7 @@
 class MoveGenerator
 {
 public:
+    friend class MovePicker;
     MoveGenerator(const Position& position) : position_(position)
     {
         // rook:17 cannon:17 knight:8 bishop:4 advisor:4 king:4 pawn:3

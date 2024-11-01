@@ -5,6 +5,28 @@
 #include <random>
 #include <unordered_map>
 
+// <http://vigna.di.unimi.it/ftp/papers/xorshift.pdf>
+class PRNG {
+
+    uint64_t s;
+
+    uint64_t rand64() {
+
+        s ^= s >> 12, s ^= s << 25, s ^= s >> 27;
+        return s * 2685821657736338717LL;
+    }
+
+   public:
+    PRNG(uint64_t seed) :
+        s(seed) {
+    }
+
+    template<typename T>
+    T rand() {
+        return T(rand64());
+    }
+};
+
 class Zobrist
 {
 public:
@@ -21,8 +43,11 @@ public:
 private:
     Zobrist()
     {
-        std::default_random_engine e{std::random_device{}()};
-        auto rand64 = [&e]() { return e() | (static_cast<U64>(e()) << 32); };
+        // std::default_random_engine e{std::random_device{}()};
+        // auto rand64 = [&e]() { return e() | (static_cast<U64>(e()) << 32); };
+        PRNG randomNumberGenerator(1);
+        auto rand64 = [&randomNumberGenerator]() { return randomNumberGenerator.rand<U64>(); };
+
         // Init Zobrist
         for (int i = PieceIndex(Piece::START); i < PieceIndex(Piece::PIECE_NUM); ++i)
         {
