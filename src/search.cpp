@@ -125,8 +125,16 @@ int Search::search(Position& position, int depth, int alpha, int beta, SearchSta
         if (score >= beta)
         {
             TT.Store(position.key(), beta, depth, move);
-            HISTORY.Success(position, move, depth);
-            ss[ply].killer_move = move;
+            // Only non capture move do history and as killer move 
+            if (position.piece_from_square(move.MoveTo()) == Piece::NO_PIECE)
+            {
+                HISTORY.Success(position, move, depth);
+                if (ss[ply].killer_move[0] != move)
+                {
+                    ss[ply].killer_move[1] = ss[ply].killer_move[0];
+                    ss[ply].killer_move[0] = move;
+                }
+            }
             return beta;
         }
         else if (score > alpha)

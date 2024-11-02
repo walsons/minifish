@@ -60,9 +60,6 @@ enum class Color : char
     BLACK
 };
 
-// using Piece = char;
-// using Move = short;
-// using Color = char;
 using U64 = unsigned long long;
 
 #endif
