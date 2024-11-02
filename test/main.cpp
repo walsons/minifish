@@ -2,6 +2,7 @@
 #include <fstream>
 #include <chrono>
 #include <algorithm>
+#include <random>
 
 #include "../src/position.h"
 #include "../src/search.h"
