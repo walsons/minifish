@@ -28,7 +28,6 @@ private:
     int search(Position& position, int depth, int alpha, int beta, SearchStack ss[], int ply);
     // Quiescence search
     int qsearch(Position& position, int alpha, int beta, SearchStack ss[], int ply);
-    void sort_moves(const Position& position, std::list<Move>& moves, Move ttMove);
 
 public:
     // This number is used to calculate how many nodes have been searched

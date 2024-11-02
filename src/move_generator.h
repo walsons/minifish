@@ -1,6 +1,8 @@
 #ifndef MOVE_GENERATOR_H
 #define MOVE_GENERATOR_H
 
+#include <vector>
+
 #include "position.h"
 #include "function.h"
 

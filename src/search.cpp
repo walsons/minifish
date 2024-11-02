@@ -187,21 +187,3 @@ int Search::qsearch(Position& position, int alpha, int beta, SearchStack ss[], i
     }
     return alpha;
 }
-
-void Search::sort_moves(const Position& position, std::list<Move>& moves, Move ttMove)
-{
-    // allocate too many memroy, will refactor this later
-    static int scores[1 << sizeof(ttMove.NumberFormat()) * 8];
-
-    for (auto move: moves)
-    {
-        scores[move] = HISTORY.HistoryValue(position, move);
-        if (move == ttMove)
-        {
-            scores[move] += History::kHistoryMax;
-        }
-    }
-    moves.sort([](const Move& a, const Move& b) {
-        return scores[a] > scores[b];
-    });
-}

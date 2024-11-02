@@ -2,12 +2,13 @@
 #define ZOBRIST_H
 
 #include "types.h"
-#include <random>
+// #include <random>
 #include <unordered_map>
 
 // <http://vigna.di.unimi.it/ftp/papers/xorshift.pdf>
+// Pseudo random number generator
 class PRNG {
-
+    using uint64_t = unsigned long long;
     uint64_t s;
 
     uint64_t rand64() {
